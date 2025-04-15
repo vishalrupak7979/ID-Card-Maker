@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Plus, Clock } from 'lucide-react'; // Import icons from Lucide
 
 const getFormattedDateTime = () => {
   const now = new Date();
@@ -27,14 +28,20 @@ const TopMenuBar = () => {
   }, []);
 
   return (
-    <div className="flex flex-col md:flex-row justify-between items-center p-4 border-b border-gray-700 bg-[#111827]">
-      <div className="flex space-x-6 text-sm md:text-base font-medium">
+    <div className="flex flex-col items-center pt-2 pl-4 pr-4 pb-2 border-b border-gray-700 bg-[#111827]">
+      {/* Centered Menu */}
+      <div className="flex space-x-6 text-sm md:text-base font-medium mb-2 items-center">
         <a href="#" className="hover:text-blue-400">Home</a>
         <a href="#" className="hover:text-blue-400">Dashboard</a>
-        <a href="#" className="hover:text-blue-400">Modules</a>
+        <div className="flex items-center space-x-1">
+          <a href="#" className="hover:text-blue-400">Modules</a>
+          <Plus size={16} className="text-white hover:text-blue-400 cursor-pointer" />
+        </div>
         <a href="#" className="hover:text-blue-400">Map</a>
       </div>
-      <div className="text-xs md:text-sm text-gray-400 mt-2 md:mt-0">
+      {/* Date and Time */}
+      <div className="flex items-center text-xs md:text-sm text-gray-400">
+        <Clock size={16} className="text-white mr-2" />
         {dateTime}
       </div>
     </div>

@@ -1,20 +1,26 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Pencil, Eye, Trash } from 'lucide-react';
+import { Pencil, Eye, Trash, RefreshCw, Search } from 'lucide-react'; // Import icons
 import TopMenuBar from './TopMenuBar';
 import Pagination from './Pagination'; // Import the Pagination component
 
 const PrintTemplateList = ({ templates }) => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState(''); // State for search input
   const templatesPerPage = 8;
+
+  // Filter templates based on the search term
+  const filteredTemplates = templates.filter((template) =>
+    template.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   // Calculate the templates to display on the current page
   const indexOfLastTemplate = currentPage * templatesPerPage;
   const indexOfFirstTemplate = indexOfLastTemplate - templatesPerPage;
-  const currentTemplates = templates.slice(indexOfFirstTemplate, indexOfLastTemplate);
+  const currentTemplates = filteredTemplates.slice(indexOfFirstTemplate, indexOfLastTemplate);
 
-  const totalPages = Math.ceil(templates.length / templatesPerPage);
+  const totalPages = Math.ceil(filteredTemplates.length / templatesPerPage);
 
   const handleAddTemplate = () => {
     navigate('/add-template');
@@ -31,15 +37,44 @@ const PrintTemplateList = ({ templates }) => {
 
       {/* Page Content */}
       <div className="flex-grow p-4 md:p-8">
+        {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
           <div>
             <h1 className="text-2xl font-semibold">Print Template</h1>
             <p className="text-sm text-gray-400">System Management</p>
           </div>
           <div className="flex gap-2">
-            <button className="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600">Refresh</button>
-            <button className="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600">Delete</button>
-            <button onClick={handleAddTemplate} className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-500">Add Template</button>
+            <span>Total Data: {filteredTemplates.length}</span>
+          </div>
+        </div>
+
+        {/* Search and Actions Section */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+          {/* Search Input */}
+          <div className="flex items-center border border-gray-600 rounded bg-[#1F2937]">
+            <Search size={16} className="text-gray-400 ml-2" />
+            <input
+              type="text"
+              placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="px-2 py-1 bg-transparent text-white focus:outline-none"
+            />
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-2">
+            <button className="flex items-center px-4 py-2 text-white hover:text-gray-400">
+              <RefreshCw size={16} className="mr-2" />
+              Refresh
+            </button>
+            <button className="flex items-center px-4 py-2   rounded hover:bg-red-500">
+              <Trash size={16} className="mr-2" />
+              Delete
+            </button>
+            <button onClick={handleAddTemplate} className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-500">
+              Add Template
+            </button>
           </div>
         </div>
 
