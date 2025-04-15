@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Pencil, Eye, Trash, RefreshCw, Search } from 'lucide-react'; // Import icons
 import TopMenuBar from './TopMenuBar';
 import Pagination from './Pagination'; // Import the Pagination component
-
+import { ReactComponent as CubeIcon } from '../assets/convert-3d-cube.svg';
 const PrintTemplateList = ({ templates }) => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,8 +43,15 @@ const PrintTemplateList = ({ templates }) => {
             <h1 className="text-2xl font-semibold">Print Template</h1>
             <p className="text-sm text-gray-400">System Management</p>
           </div>
-          <div className="flex gap-2">
-            <span>Total Data: {filteredTemplates.length}</span>
+          <div className="flex items-center gap-2 ml-auto">
+           
+              <div className='flex flex-col items-center'>
+                <h2 className='text-2xl font-semibold'>
+              {filteredTemplates.length}</h2>
+              <p className='text-xs text-gray-400'>
+               Total Data</p>
+              </div>
+            <CubeIcon className="w-10 h-10 text-white" />
           </div>
         </div>
 
@@ -64,11 +71,11 @@ const PrintTemplateList = ({ templates }) => {
 
           {/* Action Buttons */}
           <div className="flex gap-2">
-            <button className="flex items-center px-4 py-2 text-white hover:text-gray-400">
+            <button className="flex items-center px-2 py-2 text-white hover:text-gray-400">
               <RefreshCw size={16} className="mr-2" />
               Refresh
             </button>
-            <button className="flex items-center px-4 py-2   rounded hover:bg-red-500">
+            <button className="flex items-center px-4 py-2   rounded hover:text-gray-400 ">
               <Trash size={16} className="mr-2" />
               Delete
             </button>
