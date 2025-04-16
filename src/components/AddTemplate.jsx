@@ -30,7 +30,7 @@ const AddTemplate = ({ setTemplates, templates }) => {
 
   useEffect(() => {
     if (id) {
-      const templateToEdit = templates.find((template) => template.id === parseInt(id));
+      const templateToEdit = templates.find((template) => template.id === id); // Compare as strings
       if (templateToEdit) {
         setTemplateName(templateToEdit.name);
         setModuleName(templateToEdit.module);
@@ -142,7 +142,7 @@ const AddTemplate = ({ setTemplates, templates }) => {
       // Edit existing template
       setTemplates((prevTemplates) =>
         prevTemplates.map((template) =>
-          template.id === parseInt(id)
+          template.id === id
             ? { ...template, name: templateName, module: moduleName, orientation, elements, usedFields }
             : template
         )

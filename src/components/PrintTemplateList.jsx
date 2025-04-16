@@ -4,6 +4,7 @@ import { Pencil, Eye, Trash, RefreshCw, Search } from 'lucide-react'; // Import 
 import TopMenuBar from './TopMenuBar';
 import Pagination from './Pagination'; // Import the Pagination component
 import ConfirmationModal from './ConfirmationModal'; // Import the modal
+import ViewTemplateModal from './ViewTemplateModal'; // Import the ViewTemplateModal
 import { ReactComponent as CubeIcon } from '../assets/convert-3d-cube.svg';
 
 const PrintTemplateList = ({ templates, setTemplates }) => {
@@ -14,6 +15,8 @@ const PrintTemplateList = ({ templates, setTemplates }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
   const [deleteType, setDeleteType] = useState(null); // Track delete type ('single' or 'multiple')
   const [templateToDelete, setTemplateToDelete] = useState(null); // Track single template to delete
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false); // View modal state
+  const [templateToView, setTemplateToView] = useState(null); // Template to view
   const templatesPerPage = 8;
 
   // Filter templates based on the search term
@@ -80,6 +83,12 @@ const PrintTemplateList = ({ templates, setTemplates }) => {
       );
     }
     setIsModalOpen(false);
+  };
+
+  const handleViewTemplate = (id) => {
+    const template = templates.find((template) => template.id === id);
+    setTemplateToView(template);
+    setIsViewModalOpen(true);
   };
 
   return (
@@ -177,7 +186,7 @@ const PrintTemplateList = ({ templates, setTemplates }) => {
                     <button onClick={() => handleDeleteSingle(template.id)}>
                       <Trash size={16} className="text-red-400 hover:text-red-300" />
                     </button>
-                    <button onClick={() => {}}>
+                    <button onClick={() => handleViewTemplate(template.id)}>
                       <Eye size={16} className="text-blue-400 hover:text-blue-300" />
                     </button>
                   </td>
@@ -207,6 +216,13 @@ const PrintTemplateList = ({ templates, setTemplates }) => {
             ? 'Are you sure you want to delete the selected templates?'
             : 'Are you sure you want to delete this template?'
         }
+      />
+
+      {/* View Template Modal */}
+      <ViewTemplateModal
+        isOpen={isViewModalOpen}
+        onClose={() => setIsViewModalOpen(false)}
+        template={templateToView}
       />
     </div>
   );
