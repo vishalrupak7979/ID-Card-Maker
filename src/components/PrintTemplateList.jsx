@@ -4,6 +4,7 @@ import { Pencil, Eye, Trash, RefreshCw, Search } from 'lucide-react'; // Import 
 import TopMenuBar from './TopMenuBar';
 import Pagination from './Pagination'; // Import the Pagination component
 import { ReactComponent as CubeIcon } from '../assets/convert-3d-cube.svg';
+
 const PrintTemplateList = ({ templates }) => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,6 +31,10 @@ const PrintTemplateList = ({ templates }) => {
     setCurrentPage(pageNumber);
   };
 
+  const handleEditTemplate = (id) => {
+    navigate(`/edit-template/${id}`);
+  };
+
   return (
     <div className="bg-[#0B1120] min-h-screen flex flex-col text-white">
       {/* Use the TopMenuBar component */}
@@ -44,13 +49,10 @@ const PrintTemplateList = ({ templates }) => {
             <p className="text-sm text-gray-400">System Management</p>
           </div>
           <div className="flex items-center gap-2 ml-auto">
-           
-              <div className='flex flex-col items-center'>
-                <h2 className='text-2xl font-semibold'>
-              {filteredTemplates.length}</h2>
-              <p className='text-xs text-gray-400'>
-               Total Data</p>
-              </div>
+            <div className="flex flex-col items-center">
+              <h2 className="text-2xl font-semibold">{filteredTemplates.length}</h2>
+              <p className="text-xs text-gray-400">Total Data</p>
+            </div>
             <CubeIcon className="w-10 h-10 text-white" />
           </div>
         </div>
@@ -75,7 +77,7 @@ const PrintTemplateList = ({ templates }) => {
               <RefreshCw size={16} className="mr-2" />
               Refresh
             </button>
-            <button className="flex items-center px-4 py-2   rounded hover:text-gray-400 ">
+            <button className="flex items-center px-4 py-2 rounded hover:text-gray-400">
               <Trash size={16} className="mr-2" />
               Delete
             </button>
@@ -103,7 +105,9 @@ const PrintTemplateList = ({ templates }) => {
                   <td className="p-3">{template.name}</td>
                   <td className="p-3">{template.module}</td>
                   <td className="p-3 text-center flex gap-3 justify-center">
-                    <button><Pencil size={16} className="text-yellow-400 hover:text-yellow-300" /></button>
+                    <button onClick={() => handleEditTemplate(template.id)}>
+                      <Pencil size={16} className="text-yellow-400 hover:text-yellow-300" />
+                    </button>
                     <button><Eye size={16} className="text-blue-400 hover:text-blue-300" /></button>
                     <button><Trash size={16} className="text-red-400 hover:text-red-300" /></button>
                   </td>

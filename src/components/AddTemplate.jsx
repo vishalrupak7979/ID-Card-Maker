@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Rnd } from 'react-rnd';
 import FieldSelectorModal from './FieldSelectorModule';
 import TopMenuBar from './TopMenuBar';
-import { useNavigate } from 'react-router-dom';
-const AddTemplate = ({}) => {
+import { useParams, useNavigate } from 'react-router-dom';
+
+const AddTemplate = ({ setTemplates, templates }) => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [templateName, setTemplateName] = useState('');
   const [moduleName, setModuleName] = useState('Personnel');
   const [orientation, setOrientation] = useState('Vertical');
@@ -23,6 +27,18 @@ const AddTemplate = ({}) => {
   const [selectedFields, setSelectedFields] = useState([]);
   const [activeField, setActiveField] = useState(null);
   const [usedFields, setUsedFields] = useState([]);
+
+  useEffect(() => {
+    if (id) {
+      const templateToEdit = templates.find((template) => template.id === parseInt(id));
+      if (templateToEdit) {
+        setTemplateName(templateToEdit.name);
+        setModuleName(templateToEdit.module);
+        setOrientation(templateToEdit.orientation);
+        setElements(templateToEdit.elements || []); // Ensure elements are set correctly
+      }
+    }
+  }, [id, templates]);
 
   const addField = (field) => {
     const newElement = {
@@ -113,7 +129,37 @@ const AddTemplate = ({}) => {
       setTextInput('');
     }
   };
-  const navigate = useNavigate();
+
+  const handleConfirm = () => {
+    if (!templateName.trim()) {
+      alert('Template name is required!');
+      return;
+    }
+
+    if (id) {
+      // Edit existing template
+      setTemplates((prevTemplates) =>
+        prevTemplates.map((template) =>
+          template.id === parseInt(id)
+            ? { ...template, name: templateName, module: moduleName, orientation, elements }
+            : template
+        )
+      );
+    } else {
+      // Add new template
+      const newTemplate = {
+        id: uuidv4(),
+        name: templateName,
+        module: moduleName,
+        orientation,
+        elements,
+      };
+      setTemplates((prevTemplates) => [...prevTemplates, newTemplate]);
+    }
+
+    navigate('/');
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-white">
       <TopMenuBar />
@@ -121,13 +167,13 @@ const AddTemplate = ({}) => {
       {/* Content */}
       <div className="flex-grow p-4">
         <div className="mb-4 flex items-center">
-        <button
-    className="text-blue-400 mr-5"
-    onClick={() => navigate('/')}
-  >
-    ←
-  </button>
-          <h2 className="text-xl font-bold">Add New Template</h2>
+          <button
+            className="text-blue-400 mr-5"
+            onClick={() => navigate('/')}
+          >
+            ←
+          </button>
+          <h2 className="text-xl font-bold">{id ? 'Edit Template' : 'Add New Template'}</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -137,14 +183,14 @@ const AddTemplate = ({}) => {
             value={templateName}
             onChange={(e) => setTemplateName(e.target.value)}
           />
-        <select
-  className="col-span-1 p-2 bg-gray-800 border border-gray-600 rounded w-full"
-  value={moduleName}
-  onChange={(e) => setModuleName(e.target.value)}
->
-  <option value="Personnel">Personnel</option>
-  <option value="Visitor">Visitor</option>
-</select>
+          <select
+            className="col-span-1 p-2 bg-gray-800 border border-gray-600 rounded w-full"
+            value={moduleName}
+            onChange={(e) => setModuleName(e.target.value)}
+          >
+            <option value="Personnel">Personnel</option>
+            <option value="Visitor">Visitor</option>
+          </select>
           <div className="col-span-1 flex items-center gap-4">
             <label>
               <input
@@ -256,8 +302,18 @@ const AddTemplate = ({}) => {
 
       {/* Footer */}
       <div className="mt-auto flex justify-center gap-4 p-4 bg-gray-800">
-        <button className="px-4 py-2 border border-gray-500 rounded w-full md:w-auto">Cancel</button>
-        <button className="px-4 py-2 bg-blue-600 rounded w-full md:w-auto">Confirm</button>
+        <button
+          className="px-4 py-2 border border-gray-500 rounded w-full md:w-auto"
+          onClick={() => navigate('/')}
+        >
+          Cancel
+        </button>
+        <button
+          className="px-4 py-2 bg-blue-600 rounded w-full md:w-auto"
+          onClick={handleConfirm}
+        >
+          Confirm
+        </button>
       </div>
 
       <FieldSelectorModal
