@@ -36,6 +36,7 @@ const AddTemplate = ({ setTemplates, templates }) => {
         setModuleName(templateToEdit.module);
         setOrientation(templateToEdit.orientation);
         setElements(templateToEdit.elements || []); // Ensure elements are set correctly
+        setUsedFields(templateToEdit.usedFields || []); // Load used fields
       }
     }
   }, [id, templates]);
@@ -119,6 +120,7 @@ const AddTemplate = ({ setTemplates, templates }) => {
     if (usedFields.includes(field)) return;
     setActiveField(field);
     setTextInput('');
+    setUsedFields([...usedFields, field]); // Add field to usedFields
   };
 
   const handleInsertText = () => {
@@ -141,7 +143,7 @@ const AddTemplate = ({ setTemplates, templates }) => {
       setTemplates((prevTemplates) =>
         prevTemplates.map((template) =>
           template.id === parseInt(id)
-            ? { ...template, name: templateName, module: moduleName, orientation, elements }
+            ? { ...template, name: templateName, module: moduleName, orientation, elements, usedFields }
             : template
         )
       );
@@ -153,6 +155,7 @@ const AddTemplate = ({ setTemplates, templates }) => {
         module: moduleName,
         orientation,
         elements,
+        usedFields, // Save used fields
       };
       setTemplates((prevTemplates) => [...prevTemplates, newTemplate]);
     }
