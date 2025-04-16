@@ -3,8 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { Rnd } from 'react-rnd';
 import FieldSelectorModal from './FieldSelectorModule';
 import TopMenuBar from './TopMenuBar';
-
-const AddTemplate = () => {
+import { useNavigate } from 'react-router-dom';
+const AddTemplate = ({}) => {
   const [templateName, setTemplateName] = useState('');
   const [moduleName, setModuleName] = useState('Personnel');
   const [orientation, setOrientation] = useState('Vertical');
@@ -113,7 +113,7 @@ const AddTemplate = () => {
       setTextInput('');
     }
   };
-
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-white">
       <TopMenuBar />
@@ -121,7 +121,12 @@ const AddTemplate = () => {
       {/* Content */}
       <div className="flex-grow p-4">
         <div className="mb-4 flex items-center">
-          <button className="text-blue-400 mr-5">←</button>
+        <button
+    className="text-blue-400 mr-5"
+    onClick={() => navigate('/')}
+  >
+    ←
+  </button>
           <h2 className="text-xl font-bold">Add New Template</h2>
         </div>
 
@@ -132,13 +137,14 @@ const AddTemplate = () => {
             value={templateName}
             onChange={(e) => setTemplateName(e.target.value)}
           />
-          <select
-            className="col-span-1 p-2 bg-gray-800 border border-gray-600 rounded w-full"
-            value={moduleName}
-            onChange={(e) => setModuleName(e.target.value)}
-          >
-            <option value="Personnel">Personnel</option>
-          </select>
+        <select
+  className="col-span-1 p-2 bg-gray-800 border border-gray-600 rounded w-full"
+  value={moduleName}
+  onChange={(e) => setModuleName(e.target.value)}
+>
+  <option value="Personnel">Personnel</option>
+  <option value="Visitor">Visitor</option>
+</select>
           <div className="col-span-1 flex items-center gap-4">
             <label>
               <input
