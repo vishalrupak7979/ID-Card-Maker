@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Rnd } from 'react-rnd';
-
-const fieldOptions = [
-  'Personnel ID', 'Name', 'Department', 'Hire Date', 'Gender', 'Mobile Number',
-  'Photo', 'Email', 'Birthday', 'Card Number', 'Position'
-];
+import FieldSelectorModal from './FieldSelectorModule';
+// const fieldOptions = [
+//   'Personnel ID', 'Name', 'Department', 'Hire Date', 'Gender', 'Mobile Number',
+//   'Photo', 'Email', 'Birthday', 'Card Number', 'Position'
+// ];
 
 const AddTemplate = () => {
   const [templateName, setTemplateName] = useState('');
@@ -19,6 +19,13 @@ const AddTemplate = () => {
   const [leftMargin, setLeftMargin] = useState(0);
 
   const currentSide = isFrontView ? 'front' : 'back';
+
+  const [fieldOptions, setFieldOptions] = useState([
+    'Personnel ID', 'Name', 'Department', 'Hire Date', 'Gender', 'Mobile Number',
+    'Photo', 'Email', 'Birthday', 'Card Number', 'Position'
+  ]);
+  const [isFieldSelectorOpen, setIsFieldSelectorOpen] = useState(false);
+  const [selectedFields, setSelectedFields] = useState([]);
 
   const addField = (field) => {
     const newElement = {
@@ -87,6 +94,13 @@ const AddTemplate = () => {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+
+  const handleAddFields = () => {
+    setFieldOptions([...fieldOptions, ...selectedFields]);
+    setSelectedFields([]);
+    setIsFieldSelectorOpen(false);
   };
 
   return (
@@ -217,14 +231,22 @@ const AddTemplate = () => {
               </div>
 
               <div className="flex flex-wrap gap-2 mb-4">
-                {fieldOptions.map(field => (
-                  <button
-                    key={field}
-                    className="bg-gray-700 px-3 py-1 rounded hover:bg-blue-500"
-                    onClick={() => addField(field)}
-                  >{field}</button>
-                ))}
-              </div>
+        {fieldOptions.map(field => (
+          <button
+            key={field}
+            className="bg-gray-700 px-3 py-1 rounded hover:bg-blue-500"
+            onClick={() => addField(field)}
+          >
+            {field}
+          </button>
+        ))}
+        <button
+          className="bg-gray-700 px-3 py-1 rounded hover:bg-blue-500 flex items-center"
+          onClick={() => setIsFieldSelectorOpen(true)}
+        >
+          <span className="text-white">+</span>
+        </button>
+      </div>
 
               <div className="flex gap-4 mb-4 flex-wrap">
                 <label className="underline cursor-pointer">
@@ -258,6 +280,13 @@ const AddTemplate = () => {
         <button className="px-4 py-2 border border-gray-500 rounded">Cancel</button>
         <button className="px-4 py-2 bg-blue-600 rounded">Confirm</button>
       </div>
+      <FieldSelectorModal
+        isOpen={isFieldSelectorOpen}
+        onClose={() => setIsFieldSelectorOpen(false)}
+        onConfirm={handleAddFields}
+        selected={selectedFields}
+        setSelected={setSelectedFields}
+      />
     </>
   );
 };
