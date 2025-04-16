@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Rnd } from 'react-rnd';
 import FieldSelectorModal from './FieldSelectorModule';
-// const fieldOptions = [
-//   'Personnel ID', 'Name', 'Department', 'Hire Date', 'Gender', 'Mobile Number',
-//   'Photo', 'Email', 'Birthday', 'Card Number', 'Position'
-// ];
+
 
 const AddTemplate = () => {
   const [templateName, setTemplateName] = useState('');
@@ -102,6 +99,24 @@ const AddTemplate = () => {
     setSelectedFields([]);
     setIsFieldSelectorOpen(false);
   };
+
+  const [activeField, setActiveField] = useState(null);
+const [usedFields, setUsedFields] = useState([]);
+
+const handleFieldClick = (field) => {
+  if (usedFields.includes(field)) return;
+  setActiveField(field);
+  setTextInput('');
+};
+
+const handleInsertText = () => {
+  if (activeField && textInput.trim()) {
+    addField(textInput);
+    setUsedFields([...usedFields, activeField]);
+    setActiveField(null);
+    setTextInput('');
+  }
+};
 
   return (
     <>
@@ -214,13 +229,14 @@ const AddTemplate = () => {
                   onChange={(e) => setTopMargin(parseInt(e.target.value))}
                   className="p-2 bg-gray-700 border border-gray-600 rounded"
                 />
-                <input
-                  type="text"
-                  placeholder="Text"
-                  value={textInput}
-                  onChange={(e) => setTextInput(e.target.value)}
-                  className="p-2 bg-gray-700 border border-gray-600 rounded"
-                />
+             <input
+    type="text"
+    placeholder={activeField ? `Enter value for "${activeField}"` : "Select a field"}
+    value={textInput}
+    disabled={!activeField}
+    onChange={(e) => setTextInput(e.target.value)}
+    className={`p-2 border border-gray-600 rounded ${activeField ? 'bg-gray-700' : 'bg-gray-900 text-gray-500'}`}
+  />
               </div>
 
               <div className="flex items-center gap-4 mb-4">
@@ -231,22 +247,29 @@ const AddTemplate = () => {
               </div>
 
               <div className="flex flex-wrap gap-2 mb-4">
-        {fieldOptions.map(field => (
-          <button
-            key={field}
-            className="bg-gray-700 px-3 py-1 rounded hover:bg-blue-500"
-            onClick={() => addField(field)}
-          >
-            {field}
-          </button>
-        ))}
-        <button
-          className="bg-gray-700 px-3 py-1 rounded hover:bg-blue-500 flex items-center"
-          onClick={() => setIsFieldSelectorOpen(true)}
-        >
-          <span className="text-white">+</span>
-        </button>
-      </div>
+  {fieldOptions.map(field => (
+    <button
+      key={field}
+      disabled={usedFields.includes(field)}
+      className={`px-3 py-1 rounded ${
+        usedFields.includes(field)
+          ? 'bg-blue-500 text-white cursor-not-allowed'
+          : activeField === field
+          ? 'bg-blue-400 text-white'
+          : 'bg-gray-700 hover:bg-blue-500'
+      }`}
+      onClick={() => handleFieldClick(field)}
+    >
+      {field}
+    </button>
+  ))}
+  <button
+    className="bg-gray-700 px-3 py-1 rounded hover:bg-blue-500 flex items-center"
+    onClick={() => setIsFieldSelectorOpen(true)}
+  >
+    <span className="text-white">+</span>
+  </button>
+</div>
 
               <div className="flex gap-4 mb-4 flex-wrap">
                 <label className="underline cursor-pointer">
@@ -267,8 +290,15 @@ const AddTemplate = () => {
                     className="hidden"
                   />
                 </label>
-                <button onClick={() => addField(textInput)} className="underline">Insert Text</button>
-                <button onClick={() => addField('__________')} className="underline">Insert Underscore</button>
+
+                <button
+  onClick={handleInsertText}
+  className="underline  disabled:opacity-50"
+  disabled={!activeField || !textInput.trim()}
+>
+  Insert Text
+</button>
+                <button onClick={() => addField('______')} className="underline">Insert Underscore</button>
               </div>
             </div>
           </div>
