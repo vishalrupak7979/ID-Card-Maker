@@ -3,12 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { Pencil, Eye, Trash, RefreshCw, Search } from 'lucide-react'; // Import icons
 import TopMenuBar from './TopMenuBar';
 import Pagination from './Pagination'; // Import the Pagination component
+import ConfirmationModal from './ConfirmationModal'; // Import the modal
 import { ReactComponent as CubeIcon } from '../assets/convert-3d-cube.svg';
 
-const PrintTemplateList = ({ templates }) => {
+const PrintTemplateList = ({ templates, setTemplates }) => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState(''); // State for search input
+  const [selectedTemplates, setSelectedTemplates] = useState([]); // Track selected templates
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
+  const [deleteType, setDeleteType] = useState(null); // Track delete type ('single' or 'multiple')
+  const [templateToDelete, setTemplateToDelete] = useState(null); // Track single template to delete
   const templatesPerPage = 8;
 
   // Filter templates based on the search term
@@ -33,6 +38,48 @@ const PrintTemplateList = ({ templates }) => {
 
   const handleEditTemplate = (id) => {
     navigate(`/edit-template/${id}`);
+  };
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      const allIds = currentTemplates.map((template) => template.id);
+      setSelectedTemplates(allIds);
+    } else {
+      setSelectedTemplates([]);
+    }
+  };
+
+  const handleSelectTemplate = (id) => {
+    setSelectedTemplates((prevSelected) =>
+      prevSelected.includes(id)
+        ? prevSelected.filter((templateId) => templateId !== id)
+        : [...prevSelected, id]
+    );
+  };
+
+  const handleDeleteSelected = () => {
+    setDeleteType('multiple');
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteSingle = (id) => {
+    setTemplateToDelete(id);
+    setDeleteType('single');
+    setIsModalOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (deleteType === 'multiple') {
+      setTemplates((prevTemplates) =>
+        prevTemplates.filter((template) => !selectedTemplates.includes(template.id))
+      );
+      setSelectedTemplates([]);
+    } else if (deleteType === 'single') {
+      setTemplates((prevTemplates) =>
+        prevTemplates.filter((template) => template.id !== templateToDelete)
+      );
+    }
+    setIsModalOpen(false);
   };
 
   return (
@@ -77,7 +124,11 @@ const PrintTemplateList = ({ templates }) => {
               <RefreshCw size={16} className="mr-2" />
               Refresh
             </button>
-            <button className="flex items-center px-4 py-2 rounded hover:text-gray-400">
+            <button
+              className="flex items-center px-4 py-2 rounded hover:text-gray-400"
+              onClick={handleDeleteSelected}
+              disabled={selectedTemplates.length === 0}
+            >
               <Trash size={16} className="mr-2" />
               Delete
             </button>
@@ -92,7 +143,16 @@ const PrintTemplateList = ({ templates }) => {
           <table className="min-w-full text-sm text-left bg-[#111827]">
             <thead>
               <tr className="border-b border-gray-700 text-gray-300">
-                <th className="p-3"><input type="checkbox" /></th>
+                <th className="p-3">
+                  <input
+                    type="checkbox"
+                    onChange={handleSelectAll}
+                    checked={
+                      currentTemplates.length > 0 &&
+                      selectedTemplates.length === currentTemplates.length
+                    }
+                  />
+                </th>
                 <th className="p-3">Template Name</th>
                 <th className="p-3">Module</th>
                 <th className="p-3 text-center">Operations</th>
@@ -101,15 +161,25 @@ const PrintTemplateList = ({ templates }) => {
             <tbody>
               {currentTemplates.map((template) => (
                 <tr key={template.id} className="border-b border-gray-800 hover:bg-[#1F2937] transition">
-                  <td className="p-3"><input type="checkbox" /></td>
+                  <td className="p-3">
+                    <input
+                      type="checkbox"
+                      checked={selectedTemplates.includes(template.id)}
+                      onChange={() => handleSelectTemplate(template.id)}
+                    />
+                  </td>
                   <td className="p-3">{template.name}</td>
                   <td className="p-3">{template.module}</td>
                   <td className="p-3 text-center flex gap-3 justify-center">
                     <button onClick={() => handleEditTemplate(template.id)}>
                       <Pencil size={16} className="text-yellow-400 hover:text-yellow-300" />
                     </button>
-                    <button><Eye size={16} className="text-blue-400 hover:text-blue-300" /></button>
-                    <button><Trash size={16} className="text-red-400 hover:text-red-300" /></button>
+                    <button onClick={() => handleDeleteSingle(template.id)}>
+                      <Trash size={16} className="text-red-400 hover:text-red-300" />
+                    </button>
+                    <button onClick={() => {}}>
+                      <Eye size={16} className="text-blue-400 hover:text-blue-300" />
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -126,6 +196,18 @@ const PrintTemplateList = ({ templates }) => {
           onPageChange={handlePageChange}
         />
       </div>
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={confirmDelete}
+        message={
+          deleteType === 'multiple'
+            ? 'Are you sure you want to delete the selected templates?'
+            : 'Are you sure you want to delete this template?'
+        }
+      />
     </div>
   );
 };
