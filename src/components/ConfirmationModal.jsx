@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { Rnd } from 'react-rnd';
-import FieldSelectorModal from './FieldSelectorModule';
-import TopMenuBar from './TopMenuBar';
+
 
 const ConfirmationModal = ({ isOpen, onClose, onConfirm, message }) => {
   if (!isOpen) return null;

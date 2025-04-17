@@ -277,7 +277,7 @@ const AddTemplate = ({ setTemplates, templates }) => {
             <div className="flex flex-wrap gap-4 mb-4">
               <input type="number" placeholder="Left Margin" value={leftMargin} onChange={(e) => setLeftMargin(parseInt(e.target.value))} className="p-2 bg-gray-700 border border-gray-600 rounded" />
               <input type="number" placeholder="Top Margin" value={topMargin} onChange={(e) => setTopMargin(parseInt(e.target.value))} className="p-2 bg-gray-700 border border-gray-600 rounded" />
-              <input type="text" placeholder={activeField ? `Enter value for \"${activeField}\"` : "Text"} value={textInput} disabled={!activeField} onChange={(e) => setTextInput(e.target.value)} className={`p-2 border border-gray-600 rounded ${activeField ? 'bg-gray-700' : 'bg-gray-900 text-gray-500'}`} />
+              <input type="text" placeholder={activeField ? `Enter value for "${activeField}"` : "Text"} value={textInput} disabled={!activeField} onChange={(e) => setTextInput(e.target.value)} className={`p-2 border border-gray-600 rounded ${activeField ? 'bg-gray-700' : 'bg-gray-900 text-gray-500'}`} />
               <div className="flex items-center gap-2">
                 <button onClick={() => setFontSize(fontSize - 1)} className="px-2 py-1 bg-gray-700 rounded">-</button>
                 <input type="number" value={fontSize} onChange={(e) => setFontSize(parseInt(e.target.value))} className="w-12 text-center bg-transparent border-b border-white text-white" />
