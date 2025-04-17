@@ -8,12 +8,12 @@ const ViewTemplateModal = ({ isOpen, onClose, template }) => {
   const currentSide = isFrontView ? 'front' : 'back';
   const dimensions =
     template.orientation === 'Vertical'
-      ? { width: 230, height: 407 }
+      ? { width: 352, height: 499 }
       : { width: 480, height: 315 };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-[#1b2431] text-white rounded-lg p-6 relative shadow-lg w-[90%] max-w-lg">
+      <div className="bg-[#1b2431] text-white rounded-lg p-6 relative shadow-lg w-[90%] max-w-2xl">
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold">View Template</h2>
@@ -29,7 +29,7 @@ const ViewTemplateModal = ({ isOpen, onClose, template }) => {
         <div className="flex justify-center gap-4 mb-4">
           <button
             className={`px-4 py-2 rounded ${
-              isFrontView ? 'bg-blue-500' : 'bg-gray-600'
+              isFrontView ? 'bg-blue-600' : 'bg-gray-600'
             }`}
             onClick={() => setIsFrontView(true)}
           >
@@ -37,7 +37,7 @@ const ViewTemplateModal = ({ isOpen, onClose, template }) => {
           </button>
           <button
             className={`px-4 py-2 rounded ${
-              !isFrontView ? 'bg-blue-500' : 'bg-gray-600'
+              !isFrontView ? 'bg-blue-600' : 'bg-gray-600'
             }`}
             onClick={() => setIsFrontView(false)}
           >
@@ -51,6 +51,8 @@ const ViewTemplateModal = ({ isOpen, onClose, template }) => {
           style={{
             width: `${dimensions.width}px`,
             height: `${dimensions.height}px`,
+            maxWidth: '100%',
+            maxHeight: '100%',
           }}
         >
           {template.elements
@@ -95,7 +97,7 @@ const ViewTemplateModal = ({ isOpen, onClose, template }) => {
         {/* Close Button */}
         <div className="flex justify-center mt-4">
           <button
-            className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-500"
+            className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-500 w-full sm:w-auto"
             onClick={onClose}
           >
             Close

@@ -4,6 +4,9 @@ import { Rnd } from 'react-rnd';
 import FieldSelectorModal from './FieldSelectorModule';
 import TopMenuBar from './TopMenuBar';
 import { useParams, useNavigate } from 'react-router-dom';
+import { ReactComponent as Gallery } from '../assets/gallery.svg';
+import { ReactComponent as Background } from '../assets/maximize-2.svg';
+import { ReactComponent as Texticon } from '../assets/text.svg';
 
 const AddTemplate = ({ setTemplates, templates }) => {
   const { id } = useParams();
@@ -216,44 +219,58 @@ const AddTemplate = ({ setTemplates, templates }) => {
 
         <div className={`grid grid-cols-1 md:grid-cols-[${orientation === 'Vertical' ? '30%' : '40%'}_${orientation === 'Vertical' ? '70%' : '60%'}] gap-4`}>
           <div className="bg-gray-800 p-4 rounded">
-            <div className="flex gap-4 mb-4">
+            <div className="flex gap-4 mb-4 justify-center align-item-center full-width">
               <button
-                className={`px-4 py-2 ${isFrontView ? 'bg-blue-500' : 'bg-gray-600'} rounded`}
+                className={`px-4 py-2 ${isFrontView ? 'bg-blue-600' : 'bg-gray-600'} rounded full-width`}
                 onClick={() => setIsFrontView(true)}
+                style={{width:'100%'}}
               >Front</button>
               <button
-                className={`px-4 py-2 ${!isFrontView ? 'bg-blue-500' : 'bg-gray-600'} rounded`}
+                className={`px-4 py-2 ${!isFrontView ? 'bg-blue-600' : 'bg-gray-600'} rounded full-width`}
                 onClick={() => setIsFrontView(false)}
+                style={{width:'100%'}}
               >Back</button>
             </div>
-            <div className="h-[400px] bg-black relative overflow-hidden">
-              {elements
-                .filter(el => el.side === currentSide)
-                .map(el => el.type === 'background' ? (
-                  <img
-                    key={el.id}
-                    src={el.src}
-                    alt="background"
-                    className="absolute w-full h-full object-cover"
-                  />
-                ) : (
-                  <Rnd
-                    key={el.id}
-                    default={{ x: el.x, y: el.y, width: el.width || 'auto', height: el.height || 'auto' }}
-                    enableResizing={el.type !== 'field'}
-                    onDragStop={(e, d) => handleStop(e, d, el.id)}
-                    onResizeStop={(e, direction, ref, delta, position) =>
-                      handleStop(e, { ...position, width: ref.offsetWidth, height: ref.offsetHeight }, el.id)}
-                  >
-                    <div className="absolute" style={{ fontSize: el.fontSize }}>
-                      {el.type === 'field' && <span>{el.field}</span>}
-                      {el.type === 'image' && (
-                        <img src={el.src} alt="img" className="w-full h-full object-cover rounded-full" />
-                      )}
-                    </div>
-                  </Rnd>
-                ))}
-            </div>
+            <div
+  className={`relative overflow-hidden border border-white mx-auto ${
+    orientation === 'Vertical' ? 'h-[499px] w-[352px]' : 'h-[315px] w-[480px]'
+  } max-w-full max-h-full`}
+>
+  {elements
+    .filter((el) => el.side === currentSide)
+    .map((el) =>
+      el.type === 'background' ? (
+        <img
+          key={el.id}
+          src={el.src}
+          alt="background"
+          className="absolute w-full h-full object-cover"
+        />
+      ) : (
+        <Rnd
+          key={el.id}
+          default={{
+            x: el.x,
+            y: el.y,
+            width: el.width || 'auto',
+            height: el.height || 'auto',
+          }}
+          enableResizing={el.type !== 'field'}
+          onDragStop={(e, d) => handleStop(e, d, el.id)}
+          onResizeStop={(e, direction, ref, delta, position) =>
+            handleStop(e, { ...position, width: ref.offsetWidth, height: ref.offsetHeight }, el.id)
+          }
+        >
+          <div className="absolute" style={{ fontSize: el.fontSize }}>
+            {el.type === 'field' && <span>{el.field}</span>}
+            {el.type === 'image' && (
+              <img src={el.src} alt="img" className="w-full h-full object-cover rounded-full" />
+            )}
+          </div>
+        </Rnd>
+      )
+    )}
+</div>
           </div>
 
           <div className="bg-gray-800 p-4 rounded">
@@ -284,21 +301,46 @@ const AddTemplate = ({ setTemplates, templates }) => {
                 <span className="text-white">+</span>
               </button>
             </div>
-
             <div className="flex flex-wrap gap-4 mb-4">
-              <label className="underline cursor-pointer">
-                Insert Picture
-                <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, false)} className="hidden" />
-              </label>
-              <label className="underline cursor-pointer">
-                Insert Background Picture
-                <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, true)} className="hidden" />
-              </label>
-              <button onClick={handleInsertText} className="underline disabled:opacity-50" disabled={!activeField || !textInput.trim()}>
-                Insert Text
-              </button>
-              <button onClick={() => addField('______')} className="underline">Insert Underscore</button>
-            </div>
+  {/* Insert Picture */}
+  <label className="cursor-pointer flex items-center gap-2">
+         <Gallery className="w-10 h-10 text-white" style={{width:"14px",height:'14px'}}/>
+    Insert Picture
+    <input
+      type="file"
+      accept="image/*"
+      onChange={(e) => handleImageUpload(e, false)}
+      className="hidden"
+    />
+  </label>
+
+  {/* Insert Background Picture */}
+  <label className="cursor-pointer flex items-center gap-2">
+  <Background className="w-10 h-10 text-white" style={{width:"14px",height:'14px'}}/>
+    Insert Background Picture
+    <input
+      type="file"
+      accept="image/*"
+      onChange={(e) => handleImageUpload(e, true)}
+      className="hidden"
+    />
+  </label>
+
+  {/* Add Text */}
+  <button
+    onClick={handleInsertText}
+    className="flex items-center gap-2 disabled:opacity-50"
+    disabled={!activeField || !textInput.trim()}
+  >
+     <Texticon className="w-10 h-10 text-white"  style={{width:"14px",height:'14px'}}/>
+    Add Text
+  </button>
+
+  {/* Insert Underscore */}
+  <button onClick={() => addField('___')} className="">
+    __ Insert Underscore
+  </button>
+</div>
           </div>
         </div>
       </div>
