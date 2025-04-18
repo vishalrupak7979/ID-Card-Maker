@@ -12,9 +12,9 @@ const FieldSelectorModal = ({ isOpen, onClose, onConfirm, selected, setSelected 
 
   const toggleField = (field) => {
     if (selected.includes(field)) {
-      setSelected(selected.filter(f => f !== field));
+      setSelected(selected.filter(f => f !== field)); // Remove unchecked field
     } else {
-      setSelected([...selected, field]);
+      setSelected([...selected, field]); // Add checked field
     }
   };
 

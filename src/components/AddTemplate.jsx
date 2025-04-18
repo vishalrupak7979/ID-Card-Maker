@@ -114,9 +114,13 @@ const AddTemplate = ({ setTemplates, templates }) => {
   };
 
   const handleAddFields = () => {
-    setFieldOptions([...fieldOptions, ...selectedFields]);
-    setSelectedFields([]);
+    setFieldOptions(selectedFields); // Update fieldOptions to match selectedFields
     setIsFieldSelectorOpen(false);
+  };
+
+  const handleOpenFieldSelector = () => {
+    setSelectedFields(fieldOptions); // Prepopulate selectedFields with current fieldOptions
+    setIsFieldSelectorOpen(true);
   };
 
   const handleFieldClick = (field) => {
@@ -297,7 +301,7 @@ const AddTemplate = ({ setTemplates, templates }) => {
                   {field}
                 </button>
               ))}
-              <button onClick={() => setIsFieldSelectorOpen(true)} className="bg-gray-700 px-3 py-1 rounded hover:bg-blue-500 flex items-center">
+              <button onClick={handleOpenFieldSelector} className="bg-gray-700 px-3 py-1 rounded hover:bg-blue-500 flex items-center">
                 <span className="text-white">+</span>
               </button>
             </div>
@@ -363,7 +367,10 @@ const AddTemplate = ({ setTemplates, templates }) => {
 
       <FieldSelectorModal
         isOpen={isFieldSelectorOpen}
-        onClose={() => setIsFieldSelectorOpen(false)}
+        onClose={() => {
+          setSelectedFields(fieldOptions); // Reset selectedFields to match fieldOptions on close
+          setIsFieldSelectorOpen(false);
+        }}
         onConfirm={handleAddFields}
         selected={selectedFields}
         setSelected={setSelectedFields}
